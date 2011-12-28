@@ -6,7 +6,7 @@ import time
 
 t = TStat('10.12.34.139')
 tempInFahr = t.getCurrentTemp()
-tempInKelv = (tempInFahr + 459.67) *.555556
+tempInKelv = ((tempInFahr - 32) *.555556) + 273.15
 tempInsertVal = int(round(tempInKelv*100))
 
 currentTime = int(round(time.time()))
