@@ -11,9 +11,6 @@ coolUsage = t.getCoolUsageYesterday()
 
 heatMinutes = heatUsage['hour'] * 60 + heatUsage['minute']
 coolMinutes = coolUsage['hour'] * 60 + coolUsage['minute']
-print str(heatMinutes)
-print str(coolMinutes)
-
 currentTime = int(round(time.time()))
 
 conn = sqlite3.connect('/home/andy/djangoProjects/leeHouseSite/sqlite/db.sql3')
