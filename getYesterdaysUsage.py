@@ -1,5 +1,9 @@
 #!/usr/bin/python
 
+# Be careful running multiple times a day if you are running near midnight.
+# if you are the clock and thermostat are not in sync we could get data that is not from the day we are
+# expecting
+
 from TStat import *
 import sqlite3
 from datetime import datetime, timedelta
