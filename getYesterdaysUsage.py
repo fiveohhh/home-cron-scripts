@@ -10,6 +10,12 @@ from datetime import datetime, timedelta
 import time
 import os.path
 
+
+def touch(fname, times=None):
+    with file(fname,'a'):
+        os.utime(fname,times)
+
+
 # get last succesful run time
 # we will touch this file if we succesfully run
 # if file has not yet been touched in the current day,
@@ -18,7 +24,7 @@ import os.path
 FILE = 'getYesterdaysUsage'
 getUsage = False
 if not os.path.exists(FILE):
-    open(FILE,'a').close()
+    open(FILE,'w').close()
     getUsage=True # getUsage if we have to create the file
 
 # get last time FILE was modified
@@ -30,6 +36,7 @@ if dateLastSuccess.day != datetime.now().day:
     getUsage = True
 
 if getUsage == True:
+    touch(FILE)
     t = TStat('10.12.34.139')
     heatUsage = t.getHeatUsageYesterday()
     coolUsage = t.getCoolUsageYesterday()
