@@ -4,12 +4,12 @@
 # is open, Let's get the time that it was opened and compare it to the current
 # time, if it is greater than MINUTES_TILL_WARNING_SENT, send a warning email
 
-MINUTES_TILL_WARNING_SENT = 60
+MINUTES_TILL_WARNING_SENT = 30
 
 from datetime import datetime
 from sendEmail import SendEmail
 import sqlite3
-
+import os
 
 dirOfThisFile = os.path.dirname(__file__)
 
@@ -28,8 +28,10 @@ doorStatus = lastGarage[2]
 
 # If door is open
 if doorStatus == 1:
+    print "door open"
     timeDoorHasBeenOpen = datetime.now() - datetime.fromtimestamp(lastGarage[3])
-    if timeDoorHasBeenOpen.minutes > MINUTES_TILL_WARNING_SENT:
+    print "minutes" + str(timeDoorHasBeenOpen.seconds/60)
+    if timeDoorHasBeenOpen.seconds/60 > MINUTES_TILL_WARNING_SENT:
         # if warning time has passed
         message = "Subject:House Warning: Garage door is OPEN.\n\nHas been open since: "
         message += str(datetime.fromtimestamp(lastGarage[3]))
