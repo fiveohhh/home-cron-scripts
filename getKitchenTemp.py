@@ -1,5 +1,8 @@
 #!/usr/bin/python
-
+'''
+    Gets the current temperature from the thermostat in 
+    Kitchen 
+'''
 from TStat import *
 import sqlite3
 import time
