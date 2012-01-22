@@ -28,9 +28,7 @@ doorStatus = lastGarage[2]
 
 # If door is open
 if doorStatus == 1:
-    print "door open"
     timeDoorHasBeenOpen = datetime.now() - datetime.fromtimestamp(lastGarage[3])
-    print "minutes" + str(timeDoorHasBeenOpen.seconds/60)
     if timeDoorHasBeenOpen.seconds/60 > MINUTES_TILL_WARNING_SENT:
         # if warning time has passed
         message = "Subject:House Warning: Garage door is OPEN.\n\nHas been open since: "
