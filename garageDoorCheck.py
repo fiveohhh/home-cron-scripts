@@ -11,6 +11,8 @@ from sendEmail import SendEmail
 import sqlite3
 import os
 
+GARAGE_DOOR_SENSORS = [0,1]
+
 dirOfThisFile = os.path.dirname(__file__)
 
 # get settings
@@ -20,18 +22,20 @@ settings = dict(item.split(':') for item in settingsRaw.split('\n'))
 
 conn = sqlite3.connect('/home/andy/djangoProjects/leeHouseSite/sqlite/db.sql3')
 c = conn.cursor()
-c.execute('select * from restInterface_door_entry where id = (select max(id) from restInterface_door_entry) and doorNumber = 0')
+for row in c.execute('select t1.* FROM restInterface_door_entry AS t1 LEFT OUTER JOIN restInterface_door_entry AS t2 ON (t1.doorNumber = t2.doorNumber AND t1.id < t2.id) where t2.doorNumber IS NULL;'):
+    if row[1] in GARAGE_DOOR_SENSORS:
+        # This door entry is a garage door
+        lastGarage = row
+        doorStatus = row[2]
+        if doorStatus == 1:
+            timeDoorHasBeenOpen = datetime.now() - datetime.fromtimestamp(lastGarage[3])
+            if timeDoorHasBeenOpen.seconds/60 > MINUTES_TILL_WARNING_SENT:
+                # if warning time has passed
+                message = "Subject:House Warning: Garage door is OPEN.\n\nHas been open since: "
+                message += str(datetime.fromtimestamp(lastGarage[3]))
+                SendEmail(settings['WARNING_EMAIL1'], message)
+                SendEmail(settings['WARNING_EMAIL2'], message)
 
-# will only be one entry, the last one entered in the table. get it
-lastGarage = c.fetchone()
-doorStatus = lastGarage[2]
 
-# If door is open
-if doorStatus == 1:
-    timeDoorHasBeenOpen = datetime.now() - datetime.fromtimestamp(lastGarage[3])
-    if timeDoorHasBeenOpen.seconds/60 > MINUTES_TILL_WARNING_SENT:
-        # if warning time has passed
-        message = "Subject:House Warning: Garage door is OPEN.\n\nHas been open since: "
-        message += str(datetime.fromtimestamp(lastGarage[3]))
-        SendEmail(settings['WARNING_EMAIL1'], message)
-        SendEmail(settings['WARNING_EMAIL2'], message)
+
+
