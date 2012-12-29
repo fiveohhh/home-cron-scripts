@@ -36,7 +36,6 @@ if dateLastSuccess.day != datetime.now().day:
     getUsage = True
 
 if getUsage == True:
-    touch(FILE)
     t = TStat('10.12.34.139')
     heatUsage = t.getHeatUsageYesterday()
     coolUsage = t.getCoolUsageYesterday()
@@ -44,7 +43,9 @@ if getUsage == True:
     heatMinutes = heatUsage['hour'] * 60 + heatUsage['minute']
     coolMinutes = coolUsage['hour'] * 60 + coolUsage['minute']
     currentTime = int(round(time.time()))
-
+    
+    touch(FILE)
+    
     conn = sqlite3.connect('/home/andy/djangoProjects/leeHouseSite/sqlite/db.sql3')
     c = conn.cursor()
     c.execute("insert into restInterface_hvac_runtime values (NULL," + str(currentTime) + "," + str(heatMinutes) +"," + str(coolMinutes) + ")")
