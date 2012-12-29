@@ -10,15 +10,18 @@ from datetime import datetime
 from sendEmail import SendEmail
 import sqlite3
 import os
+from ConfigParser import SafeConfigParser
 
 GARAGE_DOOR_SENSORS = [0,1]
 
 dirOfThisFile = os.path.dirname(__file__)
 
 # get settings
-settingsRaw = open(dirOfThisFile + '/../houseSettings', 'r').read().strip()
-settings = dict(item.split(':') for item in settingsRaw.split('\n'))
-
+parser = SafeConfigParser()
+print dirOfThisFile
+parser.read('/home/andy/houseSettings')
+warning_email_1 = parser.get('core settings','WARNING_EMAIL1')
+warning_email_2 = parser.get('core settings','WARNING_EMAIL2')
 
 conn = sqlite3.connect('/home/andy/djangoProjects/leeHouseSite/sqlite/db.sql3')
 c = conn.cursor()
@@ -33,8 +36,8 @@ for row in c.execute('select t1.* FROM restInterface_door_entry AS t1 LEFT OUTER
                 # if warning time has passed
                 message = "Subject:House Warning: Garage door is OPEN.\n\nHas been open since: "
                 message += str(datetime.fromtimestamp(lastGarage[3]))
-                SendEmail(settings['WARNING_EMAIL1'], message)
-                SendEmail(settings['WARNING_EMAIL2'], message)
+                SendEmail(warning_email_1, message)
+                SendEmail(warning_email_2, message)
 
 
 
