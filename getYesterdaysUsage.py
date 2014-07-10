@@ -36,7 +36,7 @@ if dateLastSuccess.day != datetime.now().day:
     getUsage = True
 
 if getUsage == True:
-    t = TStat('10.12.34.139')
+    t = TStat('thermostat-FD-BB-6F.chiefmarley.local')
     heatUsage = t.getHeatUsageYesterday()
     coolUsage = t.getCoolUsageYesterday()
 

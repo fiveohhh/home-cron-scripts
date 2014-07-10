@@ -4,20 +4,13 @@
     Kitchen 
 '''
 from TStat import *
-import sqlite3
 import time
-
-t = TStat('10.12.34.139')
+import requests
+t = TStat('thermostat-FD-BB-6F.chiefmarley.local')
 try:
     tempInFahr = t.getCurrentTemp()
     tempInKelv = ((tempInFahr - 32) *.555556) + 273.15
     tempInsertVal = int(round(tempInKelv*100))
-
-    currentTime = int(round(time.time()))
-    conn = sqlite3.connect('/home/andy/djangoProjects/leeHouseSite/sqlite/db.sql3')
-    c = conn.cursor()
-    # 50 is sensor val for kitchen
-    c.execute("insert into restInterface_temp_entry values (NULL," + str(currentTime) + ",50," + str(tempInsertVal) + ")")
-    conn.commit()
+    requests.get('http://127.0.0.1/restInterface/msg/TMP50' + str(tempInsertVal))
 except:
-    x = 1
+    pass
